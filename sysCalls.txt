@@ -1,0 +1,106 @@
+==============================
+File: sleep()
+==============================
+import time
+print("Sleeping for 2 seconds...")
+time.sleep(2)
+print("Woke up")
+==============================
+File: fork()
+==============================
+import os
+
+def demo_fork():
+    pid = os.fork()
+    if pid == 0:
+        print(f"Child process: PID={os.getpid()}, Parent PID={os.getppid()}")
+    else:
+        print(f"Parent process: PID={os.getpid()}, Child PID={pid}")
+
+demo_fork()
+==============================
+File: exit()
+==============================
+import os
+
+pid = os.fork()
+if pid == 0:
+    print("Child process exiting with status 5")
+    os._exit(5)
+else:
+    pid, status = os.wait()
+    print(f"Parent collected child {pid} with exit code {os.WEXITSTATUS(status)}")
+
+==============================
+File: exec()
+==============================
+import os
+
+pid = os.fork()
+if pid == 0:
+    print(f"Child PID={os.getpid()} exec 'ls -l'")
+    os.execvp("ls", ["ls", "-l"])
+    print("exec failed")
+    os._exit(1)
+else:
+    os.wait()
+
+==============================
+File: wait()
+==============================
+import os, time
+
+pid = os.fork()
+if pid == 0:
+    print("Child sleeping for 3s...")
+    time.sleep(3)
+    os._exit(0)
+else:
+    print("Parent waiting for child...")
+    os.wait()
+    print("Parent done waiting")
+==============================
+File: getuid()
+==============================
+import os
+
+print("Current UID:", os.getuid())  # Works only on Unix/Linux
+==============================
+File: getpid()
+==============================
+import os
+
+print("Process ID:", os.getpid())
+==============================
+File: setuid()
+==============================
+import os
+
+try:
+    os.setuid(1000)   # needs root
+    print("UID changed successfully to", os.getuid())
+except PermissionError:
+    print("Permission denied: Need root privileges to change UID")
+==============================
+File: sbrk()
+==============================
+import ctypes
+
+libc = ctypes.CDLL("libc.so.6")
+cur_brk = libc.sbrk(0)   # get current program break
+print("Current program break:", hex(cur_brk))
+
+# Increase heap by 4096 bytes (4 KB)
+libc.sbrk(4096)
+new_brk = libc.sbrk(0)
+print("New program break:", hex(new_brk))
+==============================
+File: nice()
+==============================
+
+import os
+print("Current nice value:", os.nice(0))
+new_nice = os.nice(5)
+print("New nice value:", new_nice)
+
+==============================
